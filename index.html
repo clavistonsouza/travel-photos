@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claviston Souza — Explorer of the Americas</title>
+  <meta name="description" content="Chasing wild landscapes across the Americas — Sedona, Zion, Grand Canyon and beyond." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── RESET & BASE ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:   #080808;
+      --dark:    #0f0f0f;
+      --charcoal:#161616;
+      --mid:     #1e1e1e;
+      --border:  rgba(255,255,255,0.08);
+      --muted:   rgba(255,255,255,0.45);
+      --text:    rgba(255,255,255,0.88);
+      --accent:  #c9915a;   /* warm desert amber */
+      --serif:   'Cormorant Garamond', Georgia, serif;
+      --sans:    'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a  { color: inherit; text-decoration: none; }
+
+    /* ─── SCROLLBAR ─────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ─── NAV ───────────────────────────────────────────────────────── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 48px;
+      transition: padding .4s, background .4s, backdrop-filter .4s;
+    }
+    #nav.scrolled {
+      padding: 16px 48px;
+      background: rgba(8,8,8,0.80);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 400;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-links a {
+      font-size: .72rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color .25s;
+    }
+    .nav-links a:hover { color: #fff; }
+
+    /* ─── HERO SLIDESHOW ────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      width: 100vw; height: 100vh;
+      overflow: hidden;
+      background: var(--black);
+    }
+    .slide {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.4s ease;
+      transform: scale(1.08);
+      animation: none;
+    }
+    .slide.active {
+      opacity: 1;
+      animation: kenburns 8s ease-in-out forwards;
+    }
+    @keyframes kenburns {
+      from { transform: scale(1.08); }
+      to   { transform: scale(1.00); }
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.35) 0%,
+        rgba(0,0,0,.12) 40%,
+        rgba(0,0,0,.55) 80%,
+        rgba(0,0,0,.90) 100%
+      );
+      z-index: 2;
+    }
+    .hero-content {
+      position: absolute; inset: 0; z-index: 3;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      padding-bottom: 10vh;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: .68rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      opacity: 0; animation: fadeUp .9s .3s forwards;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3.4rem, 9vw, 8rem);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -.01em;
+      color: #fff;
+      opacity: 0; animation: fadeUp .9s .55s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-sub {
+      margin-top: 20px;
+      font-size: .85rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0; animation: fadeUp .9s .75s forwards;
+    }
+    .hero-scroll {
+      margin-top: 44px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0; animation: fadeUp .9s 1.1s forwards;
+    }
+    .hero-scroll span {
+      font-size: .62rem; letter-spacing: .25em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2.2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { transform: scaleY(1); opacity: .6; }
+      50%      { transform: scaleY(1.3); opacity: 1; }
+    }
+    /* slide counter */
+    .slide-counter {
+      position: absolute; bottom: 40px; right: 48px; z-index: 4;
+      font-family: var(--serif); font-size: .85rem;
+      color: var(--muted);
+      opacity: 0; animation: fadeUp .9s 1.4s forwards;
+    }
+    .slide-counter b { color: #fff; font-weight: 400; }
+    /* dots */
+    .hero-dots {
+      position: absolute; bottom: 44px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 4; display: flex; gap: 8px;
+    }
+    .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--muted); cursor: pointer;
+      transition: background .3s, transform .3s;
+    }
+    .dot.active { background: var(--accent); transform: scale(1.4); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SECTION COMMON ────────────────────────────────────────────── */
+    section { padding: 120px 48px; }
+    .section-label {
+      font-size: .65rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: #fff;
+    }
+    .section-title em { font-style: italic; color: var(--accent); }
+
+    /* ─── MANIFESTO ─────────────────────────────────────────────────── */
+    #manifesto {
+      background: var(--charcoal);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      padding: 100px 48px;
+    }
+    .manifesto-quote {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 4vw, 3rem);
+      font-weight: 300;
+      font-style: italic;
+      color: #fff;
+      line-height: 1.4;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .manifesto-quote span { color: var(--accent); }
+    .manifesto-attr {
+      margin-top: 28px;
+      font-size: .7rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ─── ABOUT ─────────────────────────────────────────────────────── */
+    #about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .about-image-wrap {
+      position: relative;
+    }
+    .about-image-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -16px -16px 16px 16px;
+      border: 1px solid var(--accent);
+      opacity: .3;
+      pointer-events: none;
+    }
+    .about-image-wrap img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      filter: grayscale(15%);
+    }
+    .about-text .section-label { margin-bottom: 12px; }
+    .about-title {
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 4vw, 3.8rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 32px;
+    }
+    .about-title em { font-style: italic; color: var(--accent); }
+    .about-body {
+      font-size: .95rem;
+      line-height: 1.85;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 44px;
+      padding-top: 44px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 2.6rem;
+      font-weight: 300;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: .68rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ─── DESTINATIONS ──────────────────────────────────────────────── */
+    #destinations {
+      background: var(--charcoal);
+      border-top: 1px solid var(--border);
+    }
+    .dest-header {
+      max-width: 1300px; margin: 0 auto 72px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 24px;
+    }
+    .dest-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .dest-card {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      cursor: pointer;
+    }
+    .dest-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .7s ease;
+    }
+    .dest-card:hover img { transform: scale(1.06); }
+    .dest-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.82) 0%, rgba(0,0,0,.0) 55%);
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px 24px;
+    }
+    .dest-card-num {
+      font-family: var(--serif);
+      font-size: .75rem;
+      color: var(--accent);
+      letter-spacing: .2em;
+      margin-bottom: 6px;
+    }
+    .dest-card-name {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .dest-card-loc {
+      font-size: .68rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      margin-top: 6px;
+    }
+
+    /* ─── GALLERY ───────────────────────────────────────────────────── */
+    #gallery {
+      background: var(--dark);
+    }
+    .gallery-header {
+      max-width: 1300px; margin: 0 auto 60px;
+    }
+    .gallery-filter {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px;
+    }
+    .filter-btn {
+      padding: 8px 20px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: .7rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .25s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .gallery-grid {
+      columns: 3 280px;
+      column-gap: 3px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 3px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .gallery-item img {
+      width: 100%;
+      display: block;
+      transition: transform .6s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.04); }
+    .gallery-item-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background .4s;
+      display: flex; align-items: flex-end;
+      padding: 20px 16px;
+    }
+    .gallery-item:hover .gallery-item-overlay {
+      background: rgba(0,0,0,.35);
+    }
+    .gallery-item-label {
+      font-size: .65rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.0);
+      transition: color .4s, transform .4s;
+      transform: translateY(6px);
+    }
+    .gallery-item:hover .gallery-item-label {
+      color: rgba(255,255,255,.8);
+      transform: translateY(0);
+    }
+
+    /* Lightbox */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,.95);
+      display: none; align-items: center; justify-content: center;
+      padding: 32px;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 90vw; max-height: 90vh;
+      object-fit: contain;
+      border: none;
+    }
+    #lightbox-close {
+      position: absolute; top: 24px; right: 32px;
+      font-size: 2rem; color: var(--muted);
+      cursor: pointer; line-height: 1;
+      transition: color .2s;
+    }
+    #lightbox-close:hover { color: #fff; }
+    #lightbox-prev, #lightbox-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 2rem; color: var(--muted);
+      cursor: pointer; padding: 16px;
+      transition: color .2s;
+      user-select: none;
+    }
+    #lightbox-prev:hover, #lightbox-next:hover { color: var(--accent); }
+    #lightbox-prev { left: 16px; }
+    #lightbox-next { right: 16px; }
+
+    /* ─── CONTACT / FOOTER ──────────────────────────────────────────── */
+    #contact {
+      text-align: center;
+      background: var(--black);
+      padding: 120px 48px 80px;
+      border-top: 1px solid var(--border);
+    }
+    .contact-title {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .contact-title em { font-style: italic; color: var(--accent); }
+    .contact-sub {
+      font-size: .88rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+    .contact-email {
+      display: inline-block;
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      letter-spacing: .06em;
+      color: var(--accent);
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 4px;
+      transition: opacity .25s;
+    }
+    .contact-email:hover { opacity: .7; }
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: .9rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .footer-copy {
+      font-size: .68rem;
+      letter-spacing: .12em;
+      color: rgba(255,255,255,.25);
+    }
+
+    /* ─── SCROLL REVEAL ─────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity .9s ease, transform .9s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .22s; }
+    .reveal-delay-3 { transition-delay: .36s; }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      section { padding: 80px 24px; }
+      #nav { padding: 20px 24px; }
+      #nav.scrolled { padding: 12px 24px; }
+      .nav-links { display: none; }
+      #about {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .dest-cards {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+      .gallery-grid { columns: 2 200px; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 540px) {
+      .gallery-grid { columns: 1; }
+      .hero-title { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ──────────────────────────────────────────────────────────── -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Claviston Souza</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────────────── -->
+<section id="hero" aria-label="Featured landscapes">
+  <!-- Slides injected by JS -->
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Adventures across the Americas</p>
+    <h1 class="hero-title">Wild<br><em>Landscapes</em></h1>
+    <p class="hero-sub">California &nbsp;·&nbsp; Arizona &nbsp;·&nbsp; Utah &nbsp;·&nbsp; Oregon &nbsp;·&nbsp; Mexico &nbsp;·&nbsp; & Beyond</p>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+  <div class="slide-counter"><b id="slide-current">01</b> / <span id="slide-total">06</span></div>
+  <div class="hero-dots" id="hero-dots"></div>
+</section>
+
+<!-- ─── MANIFESTO ─────────────────────────────────────────────────────── -->
+<div id="manifesto">
+  <blockquote class="manifesto-quote reveal">
+    "The mountains are calling and <span>I must go</span> — every trail is a new chapter, every horizon a new story waiting to be lived."
+  </blockquote>
+  <p class="manifesto-attr reveal reveal-delay-1">— Claviston Souza, Explorer</p>
+</div>
+
+<!-- ─── ABOUT ─────────────────────────────────────────────────────────── -->
+<section>
+  <div id="about">
+    <div class="about-image-wrap reveal">
+      <img src="photos/photo_001.jpg" alt="Claviston Souza at Sedona, Arizona" loading="lazy" />
+    </div>
+    <div class="about-text">
+      <p class="section-label reveal">The Explorer</p>
+      <h2 class="about-title reveal reveal-delay-1">
+        Driven by the<br>call of <em>wild places</em>
+      </h2>
+      <p class="about-body reveal reveal-delay-2">
+        I'm Claviston Souza — an explorer, adventurer, and landscape enthusiast with a deep passion for the raw, untamed beauty of the Americas. From the crimson spires of Sedona to the towering canyon walls of Zion, every expedition is a journey into the extraordinary.
+      </p>
+      <p class="about-body reveal reveal-delay-2">
+        With backpack in hand and horizon in sight, I've spent years seeking out the most breathtaking landscapes this continent has to offer. These aren't just photographs — they're memories carved in stone, light, and sky.
+      </p>
+      <div class="about-stats">
+        <div class="reveal reveal-delay-1">
+          <div class="stat-num">15+</div>
+          <div class="stat-label">Destinations</div>
+        </div>
+        <div class="reveal reveal-delay-2">
+          <div class="stat-num">216</div>
+          <div class="stat-label">Moments Captured</div>
+        </div>
+        <div class="reveal reveal-delay-3">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Miles to Go</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DESTINATIONS ──────────────────────────────────────────────────── -->
+<section id="destinations">
+  <div class="dest-header">
+    <div>
+      <p class="section-label reveal">Where I've Been</p>
+      <h2 class="section-title reveal reveal-delay-1">The <em>Expeditions</em></h2>
+    </div>
+  </div>
+  <div class="dest-cards" style="grid-template-columns: repeat(3,1fr);">
+    <div class="dest-card reveal">
+      <img src="photos/photo_612.jpg" alt="Alabama Hills, California" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">01</div>
+        <div class="dest-card-name">Alabama Hills</div>
+        <div class="dest-card-loc">California, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-1">
+      <img src="photos/photo_524.jpg" alt="Arches National Park" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">02</div>
+        <div class="dest-card-name">Arches<br>National Park</div>
+        <div class="dest-card-loc">Utah, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-2">
+      <img src="photos/photo_622.jpg" alt="Cape Canaveral, Florida" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">03</div>
+        <div class="dest-card-name">Cape Canaveral</div>
+        <div class="dest-card-loc">Florida, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="photos/photo_562.jpg" alt="Cunha, São Paulo" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">04</div>
+        <div class="dest-card-name">Cunha</div>
+        <div class="dest-card-loc">São Paulo, Brazil</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-1">
+      <img src="photos/photo_023.jpg" alt="Grand Canyon" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">05</div>
+        <div class="dest-card-name">Grand Canyon</div>
+        <div class="dest-card-loc">Arizona, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-2">
+      <img src="photos/photo_592.jpg" alt="Hanksville / Factory Butte, Utah" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">06</div>
+        <div class="dest-card-name">Hanksville</div>
+        <div class="dest-card-loc">Factory Butte, Utah</div>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="photos/photo_244.jpg" alt="Moab / Canyonlands" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">07</div>
+        <div class="dest-card-name">Moab &amp;<br>Canyonlands</div>
+        <div class="dest-card-loc">Utah, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-1">
+      <img src="photos/photo_642.jpg" alt="Monument Valley" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">08</div>
+        <div class="dest-card-name">Monument<br>Valley</div>
+        <div class="dest-card-loc">Arizona / Utah, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-2">
+      <img src="photos/photo_338.jpg" alt="New York City" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">09</div>
+        <div class="dest-card-name">New York<br>City</div>
+        <div class="dest-card-loc">New York, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="photos/photo_501.jpg" alt="Oregon Coast" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">10</div>
+        <div class="dest-card-name">Oregon<br>Coast</div>
+        <div class="dest-card-loc">Oregon, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-1">
+      <img src="photos/photo_635.jpg" alt="Pier 39 / Fisherman's Wharf, San Francisco" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">11</div>
+        <div class="dest-card-name">Pier 39</div>
+        <div class="dest-card-loc">San Francisco, CA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-2">
+      <img src="photos/photo_606.jpg" alt="San Francisco, California" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">12</div>
+        <div class="dest-card-name">San Francisco</div>
+        <div class="dest-card-loc">California, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="photos/photo_040.jpg" alt="Sedona, Arizona" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">13</div>
+        <div class="dest-card-name">Sedona</div>
+        <div class="dest-card-loc">Arizona, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-1">
+      <img src="photos/photo_625.jpg" alt="Sequoia National Park, California" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">14</div>
+        <div class="dest-card-name">Sequoia<br>National Park</div>
+        <div class="dest-card-loc">California, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-2">
+      <img src="photos/photo_601.jpg" alt="Toronto, Canada" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">15</div>
+        <div class="dest-card-name">Toronto</div>
+        <div class="dest-card-loc">Canada</div>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="photos/photo_595.jpg" alt="Torrey / Capitol Reef, Utah" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">16</div>
+        <div class="dest-card-name">Torrey</div>
+        <div class="dest-card-loc">Capitol Reef, Utah</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-1">
+      <img src="photos/photo_632.jpg" alt="Valley of Fire, Nevada" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">17</div>
+        <div class="dest-card-name">Valley of Fire</div>
+        <div class="dest-card-loc">Nevada, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-2">
+      <img src="photos/photo_208.jpg" alt="Yosemite, California" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">18</div>
+        <div class="dest-card-name">Yosemite &amp;<br>Sequoia</div>
+        <div class="dest-card-loc">California, USA</div>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="photos/photo_028.jpg" alt="Zion National Park" loading="lazy" />
+      <div class="dest-card-overlay">
+        <div class="dest-card-num">19</div>
+        <div class="dest-card-name">Zion<br>National Park</div>
+        <div class="dest-card-loc">Utah, USA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── GALLERY ───────────────────────────────────────────────────────── -->
+<section id="gallery">
+  <div class="gallery-header">
+    <p class="section-label reveal">Visual Journal</p>
+    <h2 class="section-title reveal reveal-delay-1">All <em>Adventures</em></h2>
+    <div class="gallery-filter reveal reveal-delay-2">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="sedona">Sedona</button>
+      <button class="filter-btn" data-filter="zion">Zion</button>
+      <button class="filter-btn" data-filter="grand-canyon">Grand Canyon</button>
+      <button class="filter-btn" data-filter="monument-valley">Monument Valley</button>
+      <button class="filter-btn" data-filter="california">California</button>
+      <button class="filter-btn" data-filter="moab">Moab</button>
+      <button class="filter-btn" data-filter="capitol-reef">Capitol Reef</button>
+      <button class="filter-btn" data-filter="oregon-coast">Oregon Coast</button>
+      <button class="filter-btn" data-filter="lighthouse">Lighthouses</button>
+      <button class="filter-btn" data-filter="redwoods">Redwoods</button>
+      <button class="filter-btn" data-filter="arches">Arches NP</button>
+      <button class="filter-btn" data-filter="cunha-night">Cunha</button>
+      <button class="filter-btn" data-filter="hanksville">Hanksville</button>
+      <button class="filter-btn" data-filter="san-francisco">San Francisco</button>
+      <button class="filter-btn" data-filter="alabama-hills">Alabama Hills</button>
+      <button class="filter-btn" data-filter="cape-canaveral">Cape Canaveral</button>
+      <button class="filter-btn" data-filter="sequoia">Sequoia NP</button>
+      <button class="filter-btn" data-filter="toronto">Toronto</button>
+      <button class="filter-btn" data-filter="pier39">Pier 39</button>
+      <button class="filter-btn" data-filter="valley-of-fire">Valley of Fire</button>
+      <button class="filter-btn" data-filter="nevada">Nevada</button>
+      <button class="filter-btn" data-filter="nyc">New York</button>
+      <button class="filter-btn" data-filter="mexico">Mexico</button>
+    </div>
+  </div>
+  <div class="gallery-grid" id="gallery-grid">
+    <!-- Injected by JS -->
+  </div>
+</section>
+
+<!-- ─── CONTACT ───────────────────────────────────────────────────────── -->
+<section id="contact">
+  <p class="section-label reveal">Get in Touch</p>
+  <h2 class="contact-title reveal reveal-delay-1">Let's <em>Connect</em></h2>
+  <p class="contact-sub reveal reveal-delay-2">
+    Have a trail recommendation, want to share an adventure, or just want to talk about wild places? I'd love to hear from you.
+  </p>
+  <a href="mailto:awscloudx529828@gmail.com" class="contact-email reveal reveal-delay-3">
+    awscloudx529828@gmail.com
+  </a>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
+<footer>
+  <span class="footer-logo">Claviston Souza</span>
+  <span class="footer-copy">© 2025 · Explorer of the Americas · All rights reserved</span>
+</footer>
+
+<!-- ─── LIGHTBOX ─────────────────────────────────────────────────────── -->
+<div id="lightbox" role="dialog" aria-modal="true">
+  <span id="lightbox-close" aria-label="Close">&times;</span>
+  <span id="lightbox-prev" aria-label="Previous">&#8592;</span>
+  <img id="lightbox-img" src="" alt="" />
+  <span id="lightbox-next" aria-label="Next">&#8594;</span>
+</div>
+
+<!-- ─── SCRIPTS ──────────────────────────────────────────────────────── -->
+<script>
+(function() {
+
+  /* ── Photo data ─────────────────────────────────────────────────────
+     Exact list of 189 verified landscape photos (duplicates & gym removed).
+     Tagged by location from visual review.
+  ────────────────────────────────────────────────────────────────────── */
+  const labels = {
+    sedona:           'Sedona, AZ',
+    zion:             'Zion NP, UT',
+    'grand-canyon':   'Grand Canyon, AZ',
+    nevada:           'Nevada, USA',
+    nyc:              'New York City, NY',
+    california:       'California, USA',
+    'monument-valley':'Monument Valley, AZ/UT',
+    bryce:            'Bryce Canyon, UT',
+    moab:             'Moab / Canyonlands, UT',
+    'capitol-reef':   'Capitol Reef / Torrey, UT',
+    'oregon-coast':   'Oregon Coast, OR',
+    lighthouse:       'Pacific Coast Lighthouses',
+    redwoods:         'Redwoods, Crescent City, CA',
+    arches:           'Arches National Park, UT',
+    'cunha-night':    'Cunha, São Paulo, Brazil',
+    hanksville:       'Hanksville / Factory Butte, UT',
+    'san-francisco':  'San Francisco, CA',
+    'alabama-hills':  'Alabama Hills, CA',
+    toronto:          'Toronto, Canada',
+    'cape-canaveral': 'Cape Canaveral, FL',
+    sequoia:          'Sequoia National Park, CA',
+    'valley-of-fire': 'Valley of Fire, NV',
+    'pier39':         'Pier 39 / Fisherman\'s Wharf, CA',
+    arizona:          'Page / Antelope Canyon, AZ',
+    utah:             'Salt Lake City, UT',
+    mexico:           'Cabo San Lucas, Mexico',
+    canada:           'Canada'
+  };
+
+  const tagMap = {
+    // ── Sedona, AZ ──
+    1:'sedona',2:'sedona',3:'sedona',4:'sedona',5:'sedona',6:'sedona',7:'sedona',
+    21:'sedona',22:'sedona',25:'sedona',26:'sedona',
+    29:'sedona',30:'sedona',31:'sedona',32:'sedona',33:'sedona',34:'sedona',
+    35:'sedona',36:'sedona',37:'sedona',38:'sedona',39:'sedona',40:'sedona',
+    41:'sedona',42:'sedona',43:'sedona',44:'sedona',46:'sedona',47:'sedona',
+    48:'sedona',50:'sedona',51:'sedona',52:'sedona',53:'sedona',54:'sedona',
+    55:'sedona',94:'sedona',95:'sedona',96:'sedona',111:'sedona',112:'sedona',115:'sedona',
+    // ── Zion NP, UT ──
+    8:'zion',9:'zion',10:'zion',11:'zion',12:'zion',13:'zion',
+    16:'zion',17:'zion',18:'zion',19:'zion',
+    27:'zion',28:'zion',56:'zion',58:'zion',59:'zion',
+    100:'zion',101:'zion',102:'zion',103:'zion',104:'zion',
+    257:'zion',258:'zion',259:'zion',260:'zion',
+    // ── Grand Canyon, AZ ──
+    20:'grand-canyon',23:'grand-canyon',24:'grand-canyon',
+    107:'grand-canyon',
+    // ── Nevada ──
+    105:'nevada',106:'nevada',109:'nevada',110:'nevada',
+    326:'nevada',328:'nevada',
+    // ── NYC ──
+    338:'nyc',339:'nyc',340:'nyc',341:'nyc',342:'nyc',
+    343:'nyc',344:'nyc',345:'nyc',346:'nyc',347:'nyc',
+    348:'nyc',349:'nyc',350:'nyc',351:'nyc',
+    // ── California ──
+    200:'california',201:'california',202:'california',203:'california',
+    205:'california',206:'california',207:'california',208:'california',
+    209:'california',210:'california',211:'california',212:'california',
+    213:'california',214:'california',215:'california',216:'california',
+    217:'california',218:'california',219:'california',
+    // ── Monument Valley ──
+    230:'monument-valley',231:'monument-valley',232:'monument-valley',
+    233:'monument-valley',234:'monument-valley',235:'monument-valley',
+    237:'monument-valley',
+    // ── Bryce Canyon ──
+    240:'bryce',
+    // ── Moab / Canyonlands ──
+    241:'moab',242:'moab',244:'moab',247:'moab',248:'moab',249:'moab',
+    250:'moab',251:'moab',252:'moab',254:'moab',255:'moab',256:'moab',
+    // ── Capitol Reef ──
+    270:'capitol-reef',271:'capitol-reef',273:'capitol-reef',274:'capitol-reef',
+    275:'capitol-reef',277:'capitol-reef',278:'capitol-reef',280:'capitol-reef',
+    // ── Page / Antelope Canyon, AZ ──
+    310:'arizona',316:'arizona',318:'arizona',319:'arizona',320:'arizona',
+    321:'arizona',322:'arizona',323:'arizona',324:'arizona',325:'arizona',
+    // ── Salt Lake City, UT ──
+    330:'utah',333:'utah',334:'utah',335:'utah',336:'utah',337:'utah',
+    // ── Cabo San Lucas, Mexico ──
+    400:'mexico',401:'mexico',402:'mexico',
+    // ── Canada ──
+    403:'canada',404:'canada',421:'canada',
+    // ── Fort Bragg / Yosemite, California ──
+    405:'california',406:'california',422:'california',423:'california',
+    // ── Moab extras ──
+    410:'moab',411:'moab',412:'moab',413:'moab',
+    // ── NYC extras ──
+    414:'nyc',415:'nyc',
+    // ── Zion extras ──
+    424:'zion',425:'zion',426:'zion',
+    // ── Oregon Coast (2026) ──
+    500:'oregon-coast',501:'oregon-coast',502:'oregon-coast',
+    // ── Pacific Coast Lighthouses (2026) ──
+    503:'lighthouse',504:'lighthouse',505:'lighthouse',506:'lighthouse',507:'lighthouse',508:'lighthouse',
+    509:'lighthouse',510:'lighthouse',511:'lighthouse',
+    // ── Redwoods / Crescent City, CA (2026) ──
+    512:'redwoods',513:'redwoods',514:'redwoods',515:'redwoods',
+    // ── Arches National Park, UT (2026) ──
+    516:'arches',517:'arches',518:'arches',519:'arches',520:'arches',521:'arches',522:'arches',
+    523:'arches',524:'arches',525:'arches',526:'arches',527:'arches',528:'arches',529:'arches',
+    // ── Cunha, São Paulo, Brazil ──
+    530:'cunha-night',532:'cunha-night',534:'cunha-night',536:'cunha-night',
+    540:'cunha-night',542:'cunha-night',544:'cunha-night',546:'cunha-night',548:'cunha-night',
+    550:'cunha-night',552:'cunha-night',554:'cunha-night',556:'cunha-night',558:'cunha-night',
+    560:'cunha-night',562:'cunha-night',564:'cunha-night',566:'cunha-night',568:'cunha-night',
+    570:'cunha-night',572:'cunha-night',574:'cunha-night',576:'cunha-night',578:'cunha-night',
+    580:'cunha-night',582:'cunha-night',586:'cunha-night',588:'cunha-night',
+    // ── Hanksville / Factory Butte, UT ──
+    590:'hanksville',591:'hanksville',592:'hanksville',593:'hanksville',
+    // ── Torrey / Capitol Reef, UT ──
+    594:'capitol-reef',595:'capitol-reef',596:'capitol-reef',597:'capitol-reef',598:'capitol-reef',599:'capitol-reef',600:'capitol-reef',
+    // ── Toronto, Canada ──
+    601:'toronto',602:'toronto',603:'toronto',604:'toronto',605:'toronto',
+    // ── San Francisco, CA ──
+    606:'san-francisco',607:'san-francisco',608:'san-francisco',
+    // ── Alabama Hills, CA ──
+    609:'alabama-hills',610:'alabama-hills',611:'alabama-hills',612:'alabama-hills',613:'alabama-hills',
+    // ── Cape Canaveral, FL ──
+    614:'cape-canaveral',615:'cape-canaveral',616:'cape-canaveral',617:'cape-canaveral',618:'cape-canaveral',
+    619:'cape-canaveral',620:'cape-canaveral',621:'cape-canaveral',622:'cape-canaveral',
+    // ── Sequoia National Park, CA ──
+    623:'sequoia',624:'sequoia',625:'sequoia',626:'sequoia',627:'sequoia',628:'sequoia',629:'sequoia',
+    // ── Valley of Fire, NV ──
+    630:'valley-of-fire',631:'valley-of-fire',632:'valley-of-fire',633:'valley-of-fire',634:'valley-of-fire',
+    // ── Pier 39 / Fisherman's Wharf, SF ──
+    635:'pier39',636:'pier39',637:'pier39',638:'pier39',639:'pier39',640:'pier39',641:'pier39',
+    // ── Monument Valley (new photos) ──
+    642:'monument-valley',643:'monument-valley',644:'monument-valley',645:'monument-valley',646:'monument-valley',
+    647:'monument-valley',648:'monument-valley',649:'monument-valley',650:'monument-valley',651:'monument-valley',
+    652:'monument-valley',653:'monument-valley'
+  };
+
+  // Pure landscape photos — selfies and person shots removed
+  const photoNums = [
+    1,3,12,13,16,17,18,19,23,27,28,29,32,34,36,37,38,40,44,56,59,61,63,64,66,67,95,
+    100,102,105,106,109,111,115,
+    201,203,208,211,215,216,219,230,232,233,234,235,237,244,247,248,249,250,251,255,257,258,259,260,271,273,278,
+    316,318,321,322,323,325,335,336,337,338,341,346,
+    400,402,405,406,410,412,414,424,
+    500,501,502,503,504,505,506,507,508,509,510,511,513,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,532,536,540,550,552,554,556,558,560,562,564,566,570,578,588,590,591,592,593,594,595,596,599,
+    600,
+    601,602,603,604,605,606,607,608,
+    609,610,611,612,613,
+    614,615,616,617,618,619,620,621,622,
+    623,624,625,626,627,628,629,
+    630,631,632,633,634,
+    635,636,637,638,639,640,641,
+    642,643,644,645,646,647,648,649,650,651,652,653
+  ];
+
+  const photos = photoNums.map(i => {
+    const tag = tagMap[i] || 'sedona';
+    return { src: `photos/photo_${String(i).padStart(3,'0')}.jpg`, tag, label: labels[tag] };
+  });
+
+  /* ── Hero Slideshow ──────────────────────────────────────────────── */
+  // Hero shots — one iconic image per major destination
+  const heroNums = [405,230,28,406,208,500,509,244,400,338,520];
+  const heroSlides = heroNums.map(i => ({
+    src: `photos/photo_${String(i).padStart(3,'0')}.jpg`,
+    label: labels[tagMap[i]] || ''
+  }));
+  const heroEl = document.getElementById('hero');
+  const dotsEl = document.getElementById('hero-dots');
+  const currentEl = document.getElementById('slide-current');
+  const totalEl = document.getElementById('slide-total');
+  totalEl.textContent = String(heroSlides.length).padStart(2,'0');
+
+  let slideIndex = 0;
+  let slideTimer;
+  const slideEls = [];
+
+  heroSlides.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (i === 0 ? ' active' : '');
+    div.style.backgroundImage = `url('${p.src}')`;
+    heroEl.insertBefore(div, heroEl.querySelector('.hero-overlay'));
+    slideEls.push(div);
+
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goToSlide(i));
+    dotsEl.appendChild(dot);
+  });
+
+  function goToSlide(idx) {
+    slideEls[slideIndex].classList.remove('active');
+    dotsEl.children[slideIndex].classList.remove('active');
+    slideIndex = idx;
+    slideEls[slideIndex].classList.add('active');
+    dotsEl.children[slideIndex].classList.add('active');
+    currentEl.textContent = String(slideIndex + 1).padStart(2, '0');
+    clearInterval(slideTimer);
+    slideTimer = setInterval(nextSlide, 7000);
+  }
+  function nextSlide() { goToSlide((slideIndex + 1) % heroSlides.length); }
+  slideTimer = setInterval(nextSlide, 7000);
+
+  /* ── Gallery Build ────────────────────────────────────────────────── */
+  const grid = document.getElementById('gallery-grid');
+  let currentFilter = 'all';
+  let galleryPhotos = [];
+
+  function buildGallery(filter) {
+    grid.innerHTML = '';
+    galleryPhotos = filter === 'all' ? photos : photos.filter(p => p.tag === filter);
+    galleryPhotos.forEach((p, idx) => {
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.dataset.index = idx;
+      item.innerHTML = `
+        <img src="${p.src}" alt="${p.label}" loading="lazy" />
+        <div class="gallery-item-overlay">
+          <span class="gallery-item-label">${p.label}</span>
+        </div>`;
+      item.addEventListener('click', () => openLightbox(idx));
+      grid.appendChild(item);
+    });
+  }
+  buildGallery('all');
+
+  /* ── Gallery Filter ───────────────────────────────────────────────── */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      buildGallery(currentFilter);
+    });
+  });
+
+  /* ── Lightbox ─────────────────────────────────────────────────────── */
+  const lightbox = document.getElementById('lightbox');
+  const lbImg    = document.getElementById('lightbox-img');
+  let lbIndex = 0;
+
+  function openLightbox(idx) {
+    lbIndex = idx;
+    lbImg.src = galleryPhotos[idx].src;
+    lbImg.alt = galleryPhotos[idx].label;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function lbMove(dir) {
+    lbIndex = (lbIndex + dir + galleryPhotos.length) % galleryPhotos.length;
+    lbImg.src = galleryPhotos[lbIndex].src;
+  }
+
+  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  document.getElementById('lightbox-prev').addEventListener('click', () => lbMove(-1));
+  document.getElementById('lightbox-next').addEventListener('click', () => lbMove(1));
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft')  lbMove(-1);
+    if (e.key === 'ArrowRight') lbMove(1);
+  });
+
+  /* ── Nav on scroll ────────────────────────────────────────────────── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* ── Scroll Reveal ────────────────────────────────────────────────── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => obs.observe(el));
+
+})();
+</script>
+</body>
+</html>
